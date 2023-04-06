@@ -1,0 +1,81 @@
+https://dbdiagram.io/d/63e30983296d97641d7f3ac5
+
+Table User {
+  username varcharacter
+  email varcharacter
+  password varcharacter
+  firstname varcharacter
+  lastname varcharacter
+  is_active boolean
+  is_staf boolean
+  is_superuser boolean
+  Indexes {
+    (username, email) [pk]
+  }
+}
+
+Table Article {
+  slug varcharacter [pk]
+  title varcharacter
+  content  text
+  author  User
+  status  Status
+  visibilit Visibility
+  dt_created  datetime
+  dt_updated  datetime
+  dt_published  datetime
+  highlight  boolean
+  iskecian  boolean
+  tags  Tags
+}
+
+
+Table Tag {
+  tag_name varcharacter [pk]
+  post_associated article
+  dt_created datetime
+}
+
+
+Table ArticleLike {
+  user User
+  article Article
+  dt_liked datetime
+  Indexes {
+    (user, article) [pk]
+  }
+}
+
+Table ArticleReport {
+  user user
+  article Article
+  reason reason
+  dt_reported datetime
+}
+
+Table Follow {
+  follower User
+  followed User
+  created datetime
+}
+
+Table Comment {
+  user User
+  article Article
+  content text
+  reply_to Comment [default:null]
+}
+
+
+
+
+Ref: Article.author > User.username
+Ref: Article.tags <> Tag.tag_name
+Ref: Article.author <> ArticleLike.user
+Ref: User.username <> ArticleLike.article
+Ref: ArticleReport.user > User.username
+Ref: Article.slug > ArticleReport.article
+Ref: Follow.follower - User.username
+Ref: Follow.followed - User.username
+Ref: Comment.user <> User.username
+Ref: Comment.article <> Article.slug

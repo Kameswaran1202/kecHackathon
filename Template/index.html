@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}KEConnect | Home{% endblock title %}
+{% block homeactive %}active{% endblock homeactive %}
+{% block styles %}
+<style>
+    body{
+        background: rgb(28,0,36);
+        background: linear-gradient(90deg, rgba(28,0,36,1) 0%, rgba(60,4,89,1) 35%, rgba(87,0,113,1) 100%);
+        color: rgb(255, 255, 255);
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<br>
+{% comment %} Special Post {% endcomment %}
+{% if isspl %}
+<div class="container mt-5">
+    <p class="h3 text-center">Special Posts</p>
+    <hr>
+    <div class="row">
+        {% for p in splpost %}
+        <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card border-danger">
+                <div class="card-body phead bg-dark text-light" style="height:60px; overflow:hidden">
+                    <center>{{p.title}}</center>
+                </div>
+                <div class="card-body pbody text-dark" style="height:200px">
+                    {{p.content|safe}}
+                </div>
+                <div class="card-body">
+                    <center><a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-dark">More</a></center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                {% comment %} <div class="col-lg-4 col-sm-12 col-md-4"><a href="#" class="btn btn-dark float-end">More Special Post</a></div> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>{% endif %}
+
+{% comment %} official posts {% endcomment %}
+
+<div class="container official-post mt-5" id="official-post">
+    <p class="h3 text-center">Official Posts</p>
+    <hr>
+    <div class="row">
+        {% for p in allOfficialPosts %}
+        <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card border-danger">
+                <div class="card-body phead bg-dark text-light" style="height:60px; overflow:hidden">
+                    <center>{{p.title}}</center>
+                </div>
+                <div class="card-body pbody text-dark" style="height:200px">
+                    {{p.content|safe}}
+                </div>
+                <div class="card-body">
+                    <center><a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-dark">More</a></center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                <div class="col-lg-4 col-sm-12 col-md-4">
+                    <a href="/more/official/" class="btn btn-dark float-end" id="official-post-btn">More Official Post</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- highlight posts  -->
+
+<div class="container official-post mt-5">
+    <p class="h3 text-center">Highlights...</p>
+    <hr>
+    <div class="row">
+        {% for p in allHighlightPosts %}
+        <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card border-dark gradient-border">
+                <div class="card-body phead bg-primary text-light" style="height:60px; overflow:hidden">
+                    <center>{{p.title}}</center>
+                </div>
+                <div class="card-body pbody text-light" style="height:200px; overflow:hidden;">
+                    {{p.content|safe}}
+                </div>
+                <div class="card-body">
+                    <center><a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-light">More</a></center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+
+                <div class="col-lg-4 col-sm-12 col-md-4">
+                    <a href="/more/highlight/" class="btn btn-dark float-end gradient-border">More Highlight Post</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- All posts  -->
+
+<div class="container official-post mt-5">
+    <p class="h3 text-center">All Posts...</p>
+    <hr>
+    <div class="row">
+        {% for p in allposts %}
+        <div class="col-md-4 col-lg-4 col-sm-12 mt-3">
+            <div class="card" style="{% if p.iskecian %}border: 2px solid rgb(255, 220, 104);{% endif %}">
+                <div class="card-body phead bg-dark text-light" style="height:60px; overflow:hidden;">
+                    <center>{{p.title}}</center>
+                </div>
+                <div class="card-body pbody text-dark" style="height:200px; overflow:hidden;">
+                    {{p.content|safe}}
+                </div>
+                <div class="card-body">
+                    <center><a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-dark">More</a></center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+                <div class="col-lg-4 col-sm-12 col-md-4"></div>
+
+                <div class="col-lg-4 col-sm-12 col-md-4">
+                    <a href="/more/others/" class="btn btn-dark float-end">More Post</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

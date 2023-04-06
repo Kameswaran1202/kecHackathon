@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}KECian - Home{% endblock title %}
+{% block content %}
+
+<div class="container">
+
+    <center><a href="{% url 'newpost' %}" class="btn btn-lg btn-outline-light rounded-pill mt-3 px-5"><i class="fa-solid fa-plus"></i> New Post</a></center>
+
+</div>
+
+<div class="container official bg-danger mt-3">
+    
+</div>
+
+<div class="container allpost mt-3">
+    <div class="row">
+        {% for p in allmypublicpost %}
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <a href="{% url 'viewpost' p.slug %}" class="text-light" style="text-decoration: none;">
+                <div class="card bg-dark mt-3 {% if p.highlight %}gradient-border {% elif p.iskecian %} border-gold {% else %} border-light{% endif %}">
+                    <div class="card-body" style="height: 70px; overflow:hidden;">
+                        <center>{{p.title}}</center>
+                        <hr>
+                    </div>
+                    <div class="card-body" style="height: 250px; overflow:hidden;">
+                        {{p.content|safe}}
+                    </div>
+                    <div class="card-body">
+                        <strong>Author : </strong>{{p.author.username|title}}{% if p.iskecian %}@kec{% endif %}<br>
+                        <strong>Published on : </strong>{{p.dt_published|date:"d-m-Y"}}
+                    </div>
+                    <div class="card-body">
+                        <center>
+                            <a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-info mx-1">More</a>
+                            <a href="{% url 'makepublicprivate' p.slug %}" class="btn btn-outline-warning mx-1">Make private</a>
+                            <a href="{% url 'deletepost' p.slug %}" class="btn btn-outline-danger mx-1">Delete</a>
+                        </center>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+</div>
+
+{% endblock content %}

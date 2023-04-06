@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}KECian | Login{% endblock title %}
+{% block lsbtn %}<a href="{% url 'signup' %}" class="btn btn-outline-info rounded-pill">Sign Up</a>{% endblock lsbtn %}
+{% block bgimg %}
+{% endblock bgimg %}
+
+{% block content %}
+<style>
+    .g {
+        color: rgb(247, 250, 83);
+    }
+</style>
+<br>
+<br>
+<div class="container mt-5 {% if content.highlight %}gradient-border{% endif %}"
+    style="border: 1px solid {{bordercolor}};">
+    <h3 class="text-center my-3">{{content.title|safe}}</h3>
+    {% if content.author.username %}
+    <div class="container">
+    </div>
+    <div class="card mb-3">
+        <div class="card-body bg-dark text-light">
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-sm-3">
+                    <span class="text-start"><strong>Author</strong>: {{content.author.username|title}}</span>
+                </div>
+                <div class="col-md-4 col-lg-4 col-sm-3">
+                    {% if followbtn %}
+                    <center>
+                        <button id="follow-button" class=" btn btn-outline-info"
+                            data-action="{% if not user in request.user.following.all %}follow{% else %}unfollow{% endif %}"
+                            data-username="{{ content.author.username }}">
+                            {% if isfollowing %}Following{% else %}Follow{% endif %}
+                        </button>
+                        <div class="btn-group dropend">
+                            <div class="btn-group dropend">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Report 🏴
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 1 %}" data-toggle="tooltip" data-placement="right" title="Content that is violent,graphic or posted to shock viewers"type="button">Violent or repulsive content</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 2 %}" data-toggle="tooltip" data-placement="right" title="Content that threatens individuals or targets them with prolonged or malicious insults" type="button">Harassment or bullying</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 3 %}" data-toggle="tooltip" data-placement="right" title="Content that includes acts that may result in physical harm" type="button">Harmful or dangerous acts</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 4 %}" data-toggle="tooltip" data-placement="right" title="Content that is misleading or deceptive with serious risk of egregious harm" type="button">Misinformation</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 5 %}" data-toggle="tooltip" data-placement="right" title="Content that includes sexual, predatory or abusive communications towards minors"type="button">Child Abuse</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 6 %}" data-toggle="tooltip" data-placement="right" title="Content that includes graphic sexual activity, nudity or other types of sexual content" type="button">Sexual Content</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 7 %}" data-toggle="tooltip" data-placement="right" title="Copyright, privacy or other legal complaints"type="button">Infringes my rights</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 8 %}" data-toggle="tooltip" data-placement="right" title="Content that is intended to recruit for terrorist organisations, incite violence, glorify terrorist attacks or otherwise promote acts of terrorism"type="button">Promotes Terrorism</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'reportPost' content.slug 9 %}" data-toggle="tooltip" data-placement="right" title="Content that is massively posted or otherwise misleading in nature" type="button">Spam or Misleading</a></li>
+                                  </ul>
+                              </div>
+                        </div>
+                        {% comment %} <div class="d-flex justify-content-center mt-2">
+                            <i id="like-button"
+                            data-action="{% if isliked %}unlike{% else %}like{% endif %}"
+                            data-slug="{{ content.slug }}" class="fa fa-heart fa-1x px-1 pt-1" style="font-size:23px;{% if isliked %}color:red;{% endif %}"></i>
+                            <span class="like-count pl-2">{{likecount}}</span>
+                        </div> {% endcomment %}
+                    </center>
+                    {% endif %}
+                </div>
+                <div class="col-md-4 col-lg-4 col-sm-6">
+                    <span class="text-right"><strong>Published on</strong>: {{content.dt_published}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{content.content|safe}}
+    {% endif %}
+    <h4 class="text-center text-light">Comments</h4>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-8">
+                <div class="d-flex flex-column comment-section">
+                    {% for c in comment %}
+                    <div class="bg-white p-2">
+                        <div class="d-flex flex-row user-info">
+                            <div class="d-flex flex-column justify-content-start ml-2 text-dark"><span class="d-block font-weight-bold name">{{c.user.username|title}}</span><span class="date text-black-50">Posted on - {{c.cmt_date}}</span></div>
+                        </div>
+                        <div class="mt-2">
+                            <p class="comment-text text-dark">{{c.comment}}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="bg-light p-2">
+                        <form onsubmit="return checkForVulgarLanguage()" action="{% url 'postcomment' content.slug %}" method="POST" id="myForm">
+                            {% csrf_token %}
+                            <div class="d-flex flex-row align-items-start"><img class="rounded-circle"><textarea class="form-control ml-1 shadow-none textarea" id="comments" name="comment" required></textarea></div>
+                            <div class="mt-2 text-right"><input type="submit" value="Post a comment" class="btn btn-primary btn-sm"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        
+</div>
+<script>
+    $(document).ready(function () {
+        $("#like-button").click(function () {
+            var action = $(this).data("action");
+            var slug = $(this).data("slug");
+            console.log(action, slug)
+            $.ajax({
+                url: "/like_unlike/" + slug + "/",
+                type: "POST",
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function (response) {
+                    if (action == "like") {
+                        $("#like-button").color("red");
+                        $("#like-button").data("action", "unlike");
+
+                    } else if (action == "unlike") {
+                        $("#like-button").color("white");
+                        $("#like-button").data("action", "like");
+                    } else {
+                        $("#like-button").color("red");
+                        $("#like-button").data("action", "like");
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+    
+    // for follow
+    $(document).ready(function () {
+        $("#follow-button").click(function () {
+            var action = $(this).data("action");
+            var username = $(this).data("username");
+
+            $.ajax({
+                url: "/follow_unfollow/" + username + "/",
+                type: "POST",
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function (response) {
+                    if (action == "follow") {
+                        $("#follow-button").text("Following");
+                        $("#follow-button").data("action", "unfollow");
+
+                    } else if (action == "unfollow") {
+                        $("#follow-button").text("Follow");
+                        $("#follow-button").data("action", "follow");
+                    } else {
+                        $("#follow-button").text("Follow");
+                        $("#follow-button").data("action", "follow");
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+    function checkForVulgarLanguage() {
+        // Get the value of the "comment" field
+        var comment = document.getElementById("comments").value;
+        
+        // Check if the comment contains any vulgar language
+        var vulgarWords = ["kill", "shutup", "shut up", "drug", "cocaine", "death", "murder"];
+        for (var i = 0; i < vulgarWords.length; i++) {
+          if (comment.includes(vulgarWords[i])) {
+            alert("Vulgar language is not allowed in the comment field. Please revise your comment.");
+            return false;
+          }
+        }
+        
+        // If the comment does not contain any vulgar language, allow the form to be submitted
+        return true;
+      }
+
+</script>
+{% endblock content %}

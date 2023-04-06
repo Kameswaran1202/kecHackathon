@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}KECian | Login{% endblock title %}
+{% block lsbtn %}<a href="{% url 'signup' %}" class="btn btn-outline-info rounded-pill">Sign Up</a>{% endblock lsbtn %}
+{% block bgimg %}
+{% endblock bgimg %}
+
+{% block content %}
+<br>
+<div class="container mt-5">
+    <div class="row">
+        {% for p in allpost %}
+        <div class="col-md-4 col-lg-4 col-sm-12">
+            <div class="card {{border_c}} mt-3" style="{% if canchk %}{% if p.iskecian %}border: 2px solid rgb(255, 220, 104);{% else %}border: 2px solid white;{% endif %}{% endif %}">
+                <div class="card-body phead bg-primary text-light" style="height:60px; overflow:hidden">
+                    <center>{{p.title}}</center>
+                </div>
+                <div class="card-body pbody text-light" style="height:200px; overflow:hidden;">
+                    {{p.content|safe}}
+                </div>
+                <div class="card-body">
+                    <center><a href="{% url 'viewpost' p.slug %}" class="btn btn-outline-light">More</a></center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

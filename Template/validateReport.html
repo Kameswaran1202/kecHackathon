@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}KEConnect | Admin - Validate report{% endblock title %}
+{% block adminAction %}active{% endblock adminAction %}
+{% block styles %}
+<style>
+</style>
+{% endblock styles %}
+
+{% block content %}
+<br>
+{% comment %} <p class="text-light">dsfjhdufhudsihf</p> {% endcomment %}
+{% if user.is_authenticated %}
+{% if request.user.is_superuser %}
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">User</th>
+            <th scope="col">Content</th>
+            {% comment %} <th scope="col">Total</th> {% endcomment %}
+            <th scope="col">Report Info</th>
+            <th scope="col">Delete Option</th>
+            <th scope="col">Ban Option</th>
+            <th scope="col">Ignore Option</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for x, y in allreport.items %}
+        <tr>
+            <th scope="row">1</th>
+            <td>{{x.title}}</td>
+            <td><a href="{% url 'viewpost' x.slug %}">Read content</a></td>
+            {% comment %} <td>--</td> {% endcomment %}
+            <td>                                    
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Reports
+                    </a>
+                    <ul class="dropdown-menu" >
+                        {% for t1, t2 in y.items %}
+                        <div class="dropdown">
+                            <p class="text-dark">{{t1}}</p>
+<code>
+     {% for pp in t2 %}
+--- {{pp.username}}<br>
+    {% endfor %}
+</code>
+                          </div>
+                        <br>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </td>
+            <td>
+                <a href="{% url 'deleteArticle' x.slug %}" class="btn btn-warning">Remove Post</a>
+            </td>
+            <td>
+                <a href="{% url 'banUser' x.slug %}" class="btn btn-danger">Ban User</a>
+            </td>
+            <td>
+                <a href="{% url 'ignoreReport' x.slug %}" class="btn btn-primary">Ignore</a>
+            </td>
+
+        </tr>
+    
+    <br>
+    {% endfor %}
+    {% else %}
+    <br>
+    <br>
+    <br>
+    <center>
+        <h4>Sorry you dont have access to it...</h4>
+        <a href="{% url 'home' %}" class="btn btn-outline-danger">Go to home page</a>
+    </center>
+    {% endif %}
+    {% else %}
+    <br>
+    <br>
+    <br>
+    <center>
+        <h4>Please login to continue...</h4>
+        <a href="{% url 'login' %}" class="btn btn-outline-danger">Login</a>
+    </center>
+    {% endif %}
+
+    {% endblock content %}
